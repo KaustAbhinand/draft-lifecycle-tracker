@@ -1,0 +1,9 @@
+{
+    "4ee60383-a20c-4a02-8622-3596761f1600": {
+        "id": "4ee60383-a20c-4a02-8622-3596761f1600",
+        "to": "abhinand@example.com",
+        "cc": "abhilash@example.com",
+        "subject": "Project Updates",
+        "body": "Here are the latest project updates:\n- Milestone 1 completed\n- Upcoming tasks for next week\n- Any blockers?\nPlease let me know your thoughts."
+    }
+}
