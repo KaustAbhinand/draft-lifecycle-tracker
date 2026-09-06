@@ -18,15 +18,15 @@
     </div>
 
     <nav class="nav-tabs" role="tablist">
-      <button class="nav-tab active" data-tab="dashboard" role="tab" id="tab-dashboard">📋 Dashboard</button>
-      <button class="nav-tab" data-tab="editor" role="tab" id="tab-editor">✏️ Editor</button>
-      <button class="nav-tab" data-tab="analytics" role="tab" id="tab-analytics">📊 Analytics</button>
-      <button class="nav-tab" data-tab="memory" role="tab" id="tab-memory">🧠 AI Memory</button>
+      <button class="nav-tab active" data-tab="dashboard" role="tab" id="tab-dashboard">Dashboard</button>
+      <button class="nav-tab" data-tab="editor" role="tab" id="tab-editor">Editor</button>
+      <button class="nav-tab" data-tab="analytics" role="tab" id="tab-analytics">Analytics</button>
+      <button class="nav-tab" data-tab="memory" role="tab" id="tab-memory">AI Memory</button>
     </nav>
 
     <div class="header-actions">
       <button class="btn-chat-toggle" id="chatToggleBtn">
-        💬 Ask AI Agent
+        Ask AI Agent
       </button>
     </div>
   </header>
@@ -39,7 +39,7 @@
       <div class="section-header">
         <h1 class="section-title">Draft <span>Overview</span></h1>
         <div style="display:flex;gap:10px;align-items:center;">
-          <button class="btn-secondary" id="expireNowBtn" title="Immediately expire all OPEN drafts older than 24 hours">⏰ Expire Abandoned</button>
+          <button class="btn-secondary" id="expireNowBtn" title="Immediately expire all OPEN drafts older than 24 hours">Expire Abandoned</button>
           <button class="btn-primary" id="newDraftBtn">+ New Draft</button>
         </div>
       </div>
@@ -91,7 +91,7 @@
 
       <!-- Live diff summary -->
       <div class="diff-summary" id="diffSummary" style="display:none;">
-        <div class="diff-summary-title">⚡ Live Differences from Original</div>
+        <div class="diff-summary-title">Live Differences from Original</div>
         <table class="diff-table">
           <thead>
             <tr>
@@ -109,7 +109,7 @@
         <!-- Original / Proposed -->
         <div class="editor-panel panel-original">
           <div class="editor-panel-header">
-            <span class="editor-panel-title">📄 Original Proposed</span>
+            <span class="editor-panel-title">Original Proposed</span>
             <span class="badge badge-open" id="proposedBadge">Proposed</span>
           </div>
           <div class="editor-fields">
@@ -135,8 +135,8 @@
         <!-- Editable / Actual -->
         <div class="editor-panel panel-editable">
           <div class="editor-panel-header">
-            <span class="editor-panel-title">✏️ Editable Version</span>
-            <span id="editChangedCount" class="diff-indicator" style="display:none;">⚡ <span id="changedCount">0</span> changed</span>
+            <span class="editor-panel-title">Editable Version</span>
+            <span id="editChangedCount" class="diff-indicator" style="display:none;"><span id="changedCount">0</span> changed</span>
           </div>
           <div class="editor-fields" id="editableFields">
             <div class="field-row" id="edit-to-row">
@@ -161,10 +161,10 @@
 
       <!-- Actions -->
       <div class="editor-actions">
-        <button class="btn-primary" id="submitEditBtn">💾 Save Edit + Learn</button>
-        <button class="btn-convert" id="convertDraftBtn" style="display:none;">⚡ Convert Draft</button>
-        <button class="btn-secondary" id="resetEditBtn">↩ Reset</button>
-        <button class="btn-danger" id="deleteDraftBtn">🗑 Delete Draft</button>
+        <button class="btn-primary" id="submitEditBtn">Save Edit + Learn</button>
+        <button class="btn-convert" id="convertDraftBtn" style="display:none;">Convert Draft</button>
+        <button class="btn-secondary" id="resetEditBtn">Reset</button>
+        <button class="btn-danger" id="deleteDraftBtn">Delete Draft</button>
         <span class="text-muted" id="editorFeedback"></span>
       </div>
     </section>
@@ -173,7 +173,7 @@
     <section class="view" id="view-analytics">
       <div class="section-header">
         <h1 class="section-title">Lifecycle <span>Analytics</span></h1>
-        <button class="btn-secondary" id="refreshAnalyticsBtn">↻ Refresh</button>
+        <button class="btn-secondary" id="refreshAnalyticsBtn">Refresh</button>
       </div>
 
       <div class="stats-grid" id="analyticsStatsGrid">
@@ -212,27 +212,27 @@
     <section class="view" id="view-memory">
       <div class="section-header">
         <h1 class="section-title">AI <span>Memory</span></h1>
-        <button class="btn-primary" id="refreshPatternsBtn">🔄 Re-analyze Patterns</button>
+        <button class="btn-primary" id="refreshPatternsBtn">Re-analyze Patterns</button>
       </div>
 
       <div class="memory-layout">
         <!-- Learned Patterns -->
         <div>
           <div class="memory-panel">
-            <div class="memory-panel-title"><span class="icon">🧠</span> What the Agent Has Learned</div>
+            <div class="memory-panel-title">What the Agent Has Learned</div>
             <div class="patterns-box" id="patternsBox">Loading…</div>
             <div class="text-muted mt-16" id="patternsEditCount"></div>
           </div>
 
           <div class="memory-panel mt-24">
-            <div class="memory-panel-title"><span class="icon">📈</span> Most Edited Fields</div>
+            <div class="memory-panel-title">Most Edited Fields</div>
             <canvas id="fieldsChart" width="600" height="200"></canvas>
           </div>
         </div>
 
         <!-- Edit Log -->
         <div class="memory-panel">
-          <div class="memory-panel-title"><span class="icon">📜</span> Edit History</div>
+          <div class="memory-panel-title">Edit History</div>
           <div class="edit-log" id="editLog">
             <div class="empty-state">
               <div class="empty-state-icon">📭</div>
@@ -273,7 +273,7 @@
     <div class="chat-msg agent">
       <div class="chat-msg-role">Agent</div>
       <div class="chat-bubble">
-        👋 Hi! I'm your Email Draft Lifecycle Agent.<br><br>
+        Hi! I'm your Email Draft Lifecycle Agent.<br><br>
         I can help you:<br>
         • Create new email drafts<br>
         • Convert and manage drafts<br>
@@ -284,7 +284,7 @@
   </div>
   <div class="chat-input-area">
     <textarea class="chat-input" id="chatInput" placeholder="Ask the agent…" rows="1"></textarea>
-    <button class="chat-send" id="chatSendBtn" aria-label="Send message">➤</button>
+    <button class="chat-send" id="chatSendBtn" aria-label="Send message">→</button>
   </div>
 </aside>
 

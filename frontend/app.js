@@ -473,7 +473,7 @@ $('submitEditBtn').addEventListener('click', async () => {
   } catch (err) {
     toast('Error: ' + err.message, 'error');
   } finally {
-    btn.innerHTML = '💾 Save Edit + Learn';
+    btn.innerHTML = 'Save Edit + Learn';
     btn.disabled = false;
   }
 });
@@ -503,7 +503,7 @@ $('convertDraftBtn').addEventListener('click', async () => {
   } catch (err) {
     toast('Error: ' + err.message, 'error');
   } finally {
-    btn.innerHTML = '⚡ Convert Draft';
+    btn.innerHTML = 'Convert Draft';
     btn.disabled = false;
   }
 });
@@ -560,10 +560,10 @@ function drawStatusChart(drafts) {
 
   const total = drafts.length || 1;
   const colors = {
-    OPEN: '#3b82f6',
-    CONVERTED: '#10b981',
-    CONVERTED_EDITED: '#f59e0b',
-    EXPIRED: '#ef4444'
+    OPEN: '#2563eb',
+    CONVERTED: '#16a34a',
+    CONVERTED_EDITED: '#d97706',
+    EXPIRED: '#dc2626'
   };
   const labels = {
     OPEN: 'Open',
@@ -590,25 +590,27 @@ function drawStatusChart(drafts) {
   // Inner hole
   ctx.beginPath();
   ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-  ctx.fillStyle = '#0d1117';
+  ctx.fillStyle = '#ffffff';
   ctx.fill();
 
   // Center text
-  ctx.fillStyle = '#f1f5f9';
+  ctx.fillStyle = '#101828';
   ctx.font = 'bold 28px Inter';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(total, cx, cy - 6);
   ctx.font = '11px Inter';
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = '#8992a6';
   ctx.fillText('drafts', cx, cy + 14);
 
   // Legend
   let lx = 300, ly = 60;
   Object.entries(counts).forEach(([key, val]) => {
     ctx.fillStyle = colors[key];
-    ctx.fillRect(lx, ly, 12, 12);
-    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.roundRect(lx, ly, 12, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = '#55607a';
     ctx.font = '12px Inter';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
@@ -624,10 +626,10 @@ function drawRateChart(report) {
   ctx.clearRect(0, 0, W, H);
 
   const metrics = [
-    { label: 'Conversion Rate', value: report.conversion_rate, color: '#10b981' },
-    { label: 'Edit Rate', value: report.edit_rate, color: '#f59e0b' },
-    { label: 'Expiration Rate', value: report.expiration_rate, color: '#ef4444' },
-    { label: 'Post-Conv Edit', value: report.post_conversion_edit_rate, color: '#7c3aed' },
+    { label: 'Conversion Rate', value: report.conversion_rate, color: '#16a34a' },
+    { label: 'Edit Rate', value: report.edit_rate, color: '#d97706' },
+    { label: 'Expiration Rate', value: report.expiration_rate, color: '#dc2626' },
+    { label: 'Post-Conv Edit', value: report.post_conversion_edit_rate, color: '#6d28d9' },
   ];
 
   const barH = 32, gap = 20, startY = 30, labelW = 130;
@@ -639,14 +641,14 @@ function drawRateChart(report) {
     const barW = (m.value / maxVal) * barMaxW;
 
     // Label
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = '#55607a';
     ctx.font = '12px Inter';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     ctx.fillText(m.label, labelW, y + barH / 2);
 
     // Background bar
-    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    ctx.fillStyle = '#f0f2f7';
     ctx.beginPath();
     ctx.roundRect(labelW + 10, y, barMaxW, barH, 6);
     ctx.fill();
@@ -663,7 +665,7 @@ function drawRateChart(report) {
     }
 
     // Value label
-    ctx.fillStyle = '#f1f5f9';
+    ctx.fillStyle = '#101828';
     ctx.font = 'bold 13px Inter';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -734,7 +736,7 @@ $('refreshPatternsBtn').addEventListener('click', async () => {
   } catch (err) {
     toast('Failed: ' + err.message, 'error');
   } finally {
-    btn.innerHTML = '🔄 Re-analyze Patterns';
+    btn.innerHTML = 'Re-analyze Patterns';
     btn.disabled = false;
   }
 });
@@ -747,7 +749,7 @@ function drawFieldsChart(fieldCounts) {
 
   const fields = Object.entries(fieldCounts).sort((a, b) => b[1] - a[1]);
   if (!fields.length) {
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = '#8992a6';
     ctx.font = '13px Inter';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -757,7 +759,7 @@ function drawFieldsChart(fieldCounts) {
 
   const maxVal = Math.max(...fields.map(f => f[1]));
   const barW = Math.min(80, (W - 40) / fields.length - 16);
-  const colors = ['#7c3aed', '#06b6d4', '#10b981', '#f59e0b'];
+  const colors = ['#2563eb', '#0891b2', '#16a34a', '#d97706'];
   const chartH = H - 50;
 
   fields.forEach(([field, count], i) => {
@@ -773,13 +775,13 @@ function drawFieldsChart(fieldCounts) {
     ctx.roundRect(x, y, barW, bH, 6);
     ctx.fill();
 
-    ctx.fillStyle = '#f1f5f9';
+    ctx.fillStyle = '#101828';
     ctx.font = 'bold 13px Inter';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillText(count, x + barW / 2, y - 4);
 
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = '#8992a6';
     ctx.font = '12px Inter';
     ctx.textBaseline = 'top';
     ctx.fillText(field, x + barW / 2, chartH + 8);
