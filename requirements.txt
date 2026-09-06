@@ -1,2 +1,5 @@
 google-genai
 python-dotenv
+groq
+flask
+flask-cors

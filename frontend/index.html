@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draft Lifecycle Tracker</title>
+  <meta name="description" content="AI-powered email draft lifecycle tracking with intelligent learning from user edits." />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">✉</div>
+      <div class="logo-text">Draft<span>Lifecycle</span></div>
+    </div>
+
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" data-tab="dashboard" role="tab" id="tab-dashboard">📋 Dashboard</button>
+      <button class="nav-tab" data-tab="editor" role="tab" id="tab-editor">✏️ Editor</button>
+      <button class="nav-tab" data-tab="analytics" role="tab" id="tab-analytics">📊 Analytics</button>
+      <button class="nav-tab" data-tab="memory" role="tab" id="tab-memory">🧠 AI Memory</button>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-chat-toggle" id="chatToggleBtn">
+        💬 Ask AI Agent
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main">
+
+    <!-- ===== DASHBOARD VIEW ===== -->
+    <section class="view active" id="view-dashboard">
+      <div class="section-header">
+        <h1 class="section-title">Draft <span>Overview</span></h1>
+        <button class="btn-primary" id="newDraftBtn">+ New Draft</button>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card violet">
+          <div class="stat-label">Total Drafts</div>
+          <div class="stat-value" id="statTotal">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card cyan">
+          <div class="stat-label">Conversion Rate</div>
+          <div class="stat-value" id="statConvRate">—</div>
+          <div class="stat-sub">of all drafts</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Converted</div>
+          <div class="stat-value" id="statConverted">—</div>
+          <div class="stat-sub">Clean conversions</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Post-Edit Rate</div>
+          <div class="stat-value" id="statEditRate">—</div>
+          <div class="stat-sub">Edited after convert</div>
+        </div>
+      </div>
+
+      <!-- Draft Cards -->
+      <div class="drafts-grid" id="draftsGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">📭</div>
+          <div class="empty-state-text">Loading drafts…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EDITOR VIEW ===== -->
+    <section class="view" id="view-editor">
+      <button class="editor-back-btn" id="editorBackBtn">← Back to Dashboard</button>
+
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">Draft <span>Editor</span></h1>
+          <div class="text-muted" id="editorDraftId" style="margin-top:4px;font-family:monospace;font-size:0.75rem;"></div>
+        </div>
+        <div id="editorStatusBadge"></div>
+      </div>
+
+      <!-- Live diff summary -->
+      <div class="diff-summary" id="diffSummary" style="display:none;">
+        <div class="diff-summary-title">⚡ Live Differences from Original</div>
+        <table class="diff-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Original (Proposed)</th>
+              <th>Current (Actual)</th>
+            </tr>
+          </thead>
+          <tbody id="diffTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Split Editor -->
+      <div class="editor-split">
+        <!-- Original / Proposed -->
+        <div class="editor-panel panel-original">
+          <div class="editor-panel-header">
+            <span class="editor-panel-title">📄 Original Proposed</span>
+            <span class="badge badge-open" id="proposedBadge">Proposed</span>
+          </div>
+          <div class="editor-fields">
+            <div class="field-row" id="orig-to-row">
+              <div class="field-label">To</div>
+              <div class="field-value" id="orig-to">—</div>
+            </div>
+            <div class="field-row" id="orig-cc-row">
+              <div class="field-label">CC</div>
+              <div class="field-value" id="orig-cc">—</div>
+            </div>
+            <div class="field-row" id="orig-subject-row">
+              <div class="field-label">Subject</div>
+              <div class="field-value" id="orig-subject">—</div>
+            </div>
+            <div class="field-row" id="orig-body-row">
+              <div class="field-label">Body</div>
+              <div class="field-value" id="orig-body" style="min-height:120px;">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editable / Actual -->
+        <div class="editor-panel panel-editable">
+          <div class="editor-panel-header">
+            <span class="editor-panel-title">✏️ Editable Version</span>
+            <span id="editChangedCount" class="diff-indicator" style="display:none;">⚡ <span id="changedCount">0</span> changed</span>
+          </div>
+          <div class="editor-fields" id="editableFields">
+            <div class="field-row" id="edit-to-row">
+              <div class="field-label">To</div>
+              <input class="field-input" id="edit-to" type="text" placeholder="recipient@example.com" />
+            </div>
+            <div class="field-row" id="edit-cc-row">
+              <div class="field-label">CC</div>
+              <input class="field-input" id="edit-cc" type="text" placeholder="cc@example.com" />
+            </div>
+            <div class="field-row" id="edit-subject-row">
+              <div class="field-label">Subject</div>
+              <input class="field-input" id="edit-subject" type="text" placeholder="Email subject" />
+            </div>
+            <div class="field-row" id="edit-body-row">
+              <div class="field-label">Body</div>
+              <textarea class="field-input" id="edit-body" rows="7" placeholder="Email body…"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="editor-actions">
+        <button class="btn-primary" id="submitEditBtn">💾 Save Edit + Learn</button>
+        <button class="btn-convert" id="convertDraftBtn" style="display:none;">⚡ Convert Draft</button>
+        <button class="btn-secondary" id="resetEditBtn">↩ Reset</button>
+        <span class="text-muted" id="editorFeedback"></span>
+      </div>
+    </section>
+
+    <!-- ===== ANALYTICS VIEW ===== -->
+    <section class="view" id="view-analytics">
+      <div class="section-header">
+        <h1 class="section-title">Lifecycle <span>Analytics</span></h1>
+        <button class="btn-secondary" id="refreshAnalyticsBtn">↻ Refresh</button>
+      </div>
+
+      <div class="stats-grid" id="analyticsStatsGrid">
+        <div class="stat-card violet">
+          <div class="stat-label">Total Drafts</div>
+          <div class="stat-value" id="aStatTotal">—</div>
+        </div>
+        <div class="stat-card cyan">
+          <div class="stat-label">Conversion Rate</div>
+          <div class="stat-value" id="aStatConv">—</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Edit Rate</div>
+          <div class="stat-value" id="aStatEdit">—</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Avg Time-to-Convert</div>
+          <div class="stat-value" id="aStatTime">—</div>
+          <div class="stat-sub">minutes</div>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="chart-card">
+          <div class="chart-title">Draft Status Distribution</div>
+          <canvas id="statusChart" width="400" height="260"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Conversion vs Edit Rate</div>
+          <canvas id="rateChart" width="400" height="260"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AI MEMORY VIEW ===== -->
+    <section class="view" id="view-memory">
+      <div class="section-header">
+        <h1 class="section-title">AI <span>Memory</span></h1>
+        <button class="btn-primary" id="refreshPatternsBtn">🔄 Re-analyze Patterns</button>
+      </div>
+
+      <div class="memory-layout">
+        <!-- Learned Patterns -->
+        <div>
+          <div class="memory-panel">
+            <div class="memory-panel-title"><span class="icon">🧠</span> What the Agent Has Learned</div>
+            <div class="patterns-box" id="patternsBox">Loading…</div>
+            <div class="text-muted mt-16" id="patternsEditCount"></div>
+          </div>
+
+          <div class="memory-panel mt-24">
+            <div class="memory-panel-title"><span class="icon">📈</span> Most Edited Fields</div>
+            <canvas id="fieldsChart" width="600" height="200"></canvas>
+          </div>
+        </div>
+
+        <!-- Edit Log -->
+        <div class="memory-panel">
+          <div class="memory-panel-title"><span class="icon">📜</span> Edit History</div>
+          <div class="edit-log" id="editLog">
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <div class="empty-state-text">No edits recorded yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ==================== CHAT PANEL ==================== -->
+<div class="chat-overlay" id="chatOverlay"></div>
+<aside class="chat-panel" id="chatPanel" role="complementary" aria-label="AI Agent Chat">
+  <div class="chat-header">
+    <div class="chat-title">
+      <span class="chat-title-dot"></span>
+      AI Lifecycle Agent
+    </div>
+    <button class="chat-close" id="chatCloseBtn" aria-label="Close chat">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg agent">
+      <div class="chat-msg-role">Agent</div>
+      <div class="chat-bubble">
+        👋 Hi! I'm your Email Draft Lifecycle Agent.<br><br>
+        I can help you:<br>
+        • Create new email drafts<br>
+        • Convert and manage drafts<br>
+        • Generate lifecycle reports<br><br>
+        Just tell me what you need!
+      </div>
+    </div>
+  </div>
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" placeholder="Ask the agent…" rows="1"></textarea>
+    <button class="chat-send" id="chatSendBtn" aria-label="Send message">➤</button>
+  </div>
+</aside>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

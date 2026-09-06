@@ -1,0 +1,23 @@
+{
+  "edits": [
+    {
+      "draft_id": "ddbde7ba-0080-433b-9df7-ca24bac33987",
+      "timestamp": "2026-09-06T14:54:37.271471",
+      "changes": {
+        "subject": "Meeting Request for Tomorrow Morning 10 AM.",
+        "body": "Hi Sanjeev,\n\nI hope you are doing well. I would like to schedule a meeting with you tomorrow morning to discuss our upcoming project and align on next steps. Please let me know your availability and preferred time.\n\nThank you,\nSanjeev"
+      },
+      "diff": {
+        "subject": {
+          "proposed": "Meeting Request for Tomorrow Morning",
+          "actual": "Meeting Request for Tomorrow Morning 10 AM."
+        },
+        "body": {
+          "proposed": "Hi Sanjeev,\n\nI hope you are doing well. I would like to schedule a meeting with you tomorrow morning to discuss our upcoming project and align on next steps. Please let me know your availability and preferred time.\n\nThank you,\n[Your Name]",
+          "actual": "Hi Sanjeev,\n\nI hope you are doing well. I would like to schedule a meeting with you tomorrow morning to discuss our upcoming project and align on next steps. Please let me know your availability and preferred time.\n\nThank you,\nSanjeev"
+        }
+      }
+    }
+  ],
+  "patterns": "- **Add precise timing** \u2013 expands the subject to include the exact meeting time (e.g., \u201c10\u202fAM\u201d).  \n- **Eliminate placeholders** \u2013 replaces generic sign\u2011off (\u201c[Your Name]\u201d) with a real name.  \n- **Preserve body content** \u2013 keeps the original greeting, message, and closing line unchanged.  \n- **Use the recipient\u2019s name as signature** \u2013 signs the email with \u201cSanjeev\u201d instead of the sender\u2019s name, indicating a preference for personalizing the sign\u2011off.  "
+}
