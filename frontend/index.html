@@ -38,7 +38,10 @@
     <section class="view active" id="view-dashboard">
       <div class="section-header">
         <h1 class="section-title">Draft <span>Overview</span></h1>
-        <button class="btn-primary" id="newDraftBtn">+ New Draft</button>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn-secondary" id="expireNowBtn" title="Immediately expire all OPEN drafts older than 24 hours">⏰ Expire Abandoned</button>
+          <button class="btn-primary" id="newDraftBtn">+ New Draft</button>
+        </div>
       </div>
 
       <!-- Stats Row -->
@@ -161,6 +164,7 @@
         <button class="btn-primary" id="submitEditBtn">💾 Save Edit + Learn</button>
         <button class="btn-convert" id="convertDraftBtn" style="display:none;">⚡ Convert Draft</button>
         <button class="btn-secondary" id="resetEditBtn">↩ Reset</button>
+        <button class="btn-danger" id="deleteDraftBtn">🗑 Delete Draft</button>
         <span class="text-muted" id="editorFeedback"></span>
       </div>
     </section>
@@ -240,6 +244,19 @@
     </section>
 
   </main>
+</div>
+
+<!-- ==================== CONFIRM MODAL ==================== -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <span class="modal-icon" id="modalIcon">🗑</span>
+    <div class="modal-title" id="modalTitle">Delete Draft?</div>
+    <div class="modal-desc" id="modalDesc">This action cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="modalCancelBtn">Cancel</button>
+      <button class="btn-danger" id="modalConfirmBtn">Delete</button>
+    </div>
+  </div>
 </div>
 
 <!-- ==================== CHAT PANEL ==================== -->

@@ -28,6 +28,14 @@ function formatDate(iso) {
   });
 }
 
+function formatCountdown(seconds) {
+  if (seconds <= 0) return 'Expired';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m left`;
+  return `${m}m left`;
+}
+
 function statusBadgeHTML(status) {
   const s = (status || 'open').toLowerCase();
   const cls = `badge badge-${s.replace(/_/g, '_')}`;
@@ -77,9 +85,35 @@ document.querySelectorAll('.nav-tab').forEach(btn => {
 });
 
 // ====================================================
-// DASHBOARD
+// CONFIRM MODAL
 // ====================================================
 
+let _modalResolve = null;
+
+function showConfirmModal({ icon = '🗑', title, desc, confirmLabel = 'Confirm', confirmClass = 'btn-danger' }) {
+  return new Promise(resolve => {
+    _modalResolve = resolve;
+    $('modalIcon').textContent = icon;
+    $('modalTitle').textContent = title;
+    $('modalDesc').textContent = desc;
+    $('modalConfirmBtn').textContent = confirmLabel;
+    $('modalConfirmBtn').className = confirmClass;
+    $('confirmModal').classList.add('open');
+  });
+}
+
+function closeModal(result) {
+  $('confirmModal').classList.remove('open');
+  if (_modalResolve) { _modalResolve(result); _modalResolve = null; }
+}
+
+$('modalConfirmBtn').addEventListener('click', () => closeModal(true));
+$('modalCancelBtn').addEventListener('click', () => closeModal(false));
+$('confirmModal').addEventListener('click', e => { if (e.target === $('confirmModal')) closeModal(false); });
+
+// ====================================================
+// DASHBOARD
+// ====================================================
 async function loadDashboard() {
   try {
     const [drafts, report] = await Promise.all([
@@ -103,10 +137,26 @@ async function loadDashboard() {
       return;
     }
 
+    const now = Date.now();
     grid.innerHTML = drafts.map(d => {
       const proposed = d.proposed || {};
+      const isExpired = d.status === 'EXPIRED';
+      const isOpen = d.status === 'OPEN';
+
+      // Compute expiry countdown for OPEN drafts
+      let expiryHTML = '';
+      if (isOpen && d.created_at) {
+        const createdAt = new Date(d.created_at).getTime();
+        const expiresAt = createdAt + 24 * 3600 * 1000;
+        const secondsLeft = Math.max(0, Math.round((expiresAt - now) / 1000));
+        const soon = secondsLeft < 3600; // < 1 hour
+        expiryHTML = `<span class="expiry-pill ${soon ? 'expiring-soon' : 'expiring-ok'}" data-expires="${expiresAt}">
+          ⏱ ${formatCountdown(secondsLeft)}
+        </span>`;
+      }
+
       return `
-        <div class="draft-card" onclick="openEditor('${d.id}')" role="button" tabindex="0">
+        <div class="draft-card${isExpired ? ' is-expired' : ''}" data-id="${d.id}" role="button" tabindex="0">
           <div class="draft-card-header">
             <div class="draft-card-to">${proposed.to || '—'}</div>
             ${statusBadgeHTML(d.status)}
@@ -114,17 +164,113 @@ async function loadDashboard() {
           <div class="draft-card-subject">${proposed.subject || '(no subject)'}</div>
           <div class="draft-card-body">${truncate(proposed.body, 100)}</div>
           <div class="draft-card-footer">
-            <span class="draft-card-date">${formatDate(d.created_at)}</span>
-            <span style="font-size:0.75rem;color:var(--text-muted);">→ Click to edit</span>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span class="draft-card-date">${formatDate(d.created_at)}</span>
+              ${expiryHTML}
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              ${!isExpired ? '<span style="font-size:0.75rem;color:var(--text-muted);">→ Edit</span>' : ''}
+              <button class="btn-delete-card" data-delete-id="${d.id}" title="Delete draft">🗑</button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
 
+    // Click handlers for cards (open editor) and delete buttons
+    grid.querySelectorAll('.draft-card').forEach(card => {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.btn-delete-card')) return; // handled separately
+        openEditor(card.dataset.id);
+      });
+    });
+
+    grid.querySelectorAll('.btn-delete-card').forEach(btn => {
+      btn.addEventListener('click', async e => {
+        e.stopPropagation();
+        const draftId = btn.dataset.deleteId;
+        const confirmed = await showConfirmModal({
+          icon: '🗑',
+          title: 'Delete this draft?',
+          desc: 'This will permanently remove the draft from the system. This cannot be undone.',
+          confirmLabel: 'Yes, Delete'
+        });
+        if (confirmed) await deleteDraft(draftId);
+      });
+    });
+
+    // Live countdown tick for all expiry pills
+    startCountdownTick();
+
   } catch (err) {
     toast('Failed to load dashboard: ' + err.message, 'error');
   }
 }
+
+// ====================================================
+// COUNTDOWN TICKER
+// ====================================================
+
+let _tickInterval = null;
+
+function startCountdownTick() {
+  if (_tickInterval) clearInterval(_tickInterval);
+  _tickInterval = setInterval(() => {
+    document.querySelectorAll('.expiry-pill[data-expires]').forEach(pill => {
+      const expiresAt = parseInt(pill.dataset.expires);
+      const secondsLeft = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
+      const soon = secondsLeft < 3600;
+      pill.textContent = `⏱ ${formatCountdown(secondsLeft)}`;
+      pill.className = `expiry-pill ${soon ? 'expiring-soon' : 'expiring-ok'}`;
+      pill.dataset.expires = expiresAt; // preserve attribute
+      if (secondsLeft === 0) loadDashboard(); // reload when one expires
+    });
+  }, 30000); // tick every 30s
+}
+
+// ====================================================
+// DELETE DRAFT
+// ====================================================
+
+async function deleteDraft(draftId) {
+  try {
+    const result = await apiFetch(`/api/drafts/${draftId}`, { method: 'DELETE' });
+    if (result.success) {
+      toast('🗑 Draft deleted.', 'success');
+      loadDashboard();
+      // If currently editing this draft, go back
+      if (currentDraft && currentDraft.id === draftId) {
+        switchTab('dashboard');
+        currentDraft = null;
+      }
+    } else {
+      toast('Delete failed: ' + (result.error || 'Unknown'), 'error');
+    }
+  } catch (err) {
+    toast('Error: ' + err.message, 'error');
+  }
+}
+
+// ====================================================
+// EXPIRE ABANDONED
+// ====================================================
+
+$('expireNowBtn').addEventListener('click', async () => {
+  const btn = $('expireNowBtn');
+  btn.textContent = 'Checking…';
+  btn.disabled = true;
+  try {
+    const result = await apiFetch('/api/drafts/expire-abandoned', { method: 'POST' });
+    const n = result.expired_count || 0;
+    toast(n > 0 ? `⏰ ${n} draft(s) expired.` : 'No drafts to expire yet.', n > 0 ? 'success' : 'info');
+    loadDashboard();
+  } catch (err) {
+    toast('Error: ' + err.message, 'error');
+  } finally {
+    btn.textContent = '⏰ Expire Abandoned';
+    btn.disabled = false;
+  }
+});
 
 // New draft via prompt
 $('newDraftBtn').addEventListener('click', () => {
@@ -159,6 +305,19 @@ async function openEditor(draftId) {
     $('editorDraftId').textContent = `ID: ${draft.id}`;
     $('editorStatusBadge').innerHTML = statusBadgeHTML(draft.status);
 
+    // Show expiry info for OPEN drafts in editor
+    if (draft.status === 'OPEN' && draft.created_at) {
+      const expiresAt = new Date(draft.created_at).getTime() + 24 * 3600 * 1000;
+      const secondsLeft = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
+      $('editorFeedback').textContent = secondsLeft > 0
+        ? `⏱ Expires in ${formatCountdown(secondsLeft)} — convert to save it`
+        : '⚠️ This draft has expired';
+      $('editorFeedback').style.color = secondsLeft < 3600 ? 'var(--accent-amber)' : 'var(--text-muted)';
+    } else {
+      $('editorFeedback').textContent = '';
+      $('editorFeedback').style.color = '';
+    }
+
     // Original (proposed) panel
     $('orig-to').textContent = proposed.to || '—';
     $('orig-cc').textContent = proposed.cc || '—';
@@ -175,7 +334,7 @@ async function openEditor(draftId) {
     $('convertDraftBtn').style.display =
       draft.status === 'OPEN' ? 'inline-flex' : 'none';
 
-    $('editorFeedback').textContent = '';
+    $('editorFeedback').style.cssText = '';
     updateLiveDiff();
 
   } catch (err) {
@@ -347,6 +506,18 @@ $('convertDraftBtn').addEventListener('click', async () => {
 });
 
 $('editorBackBtn').addEventListener('click', () => switchTab('dashboard'));
+
+// Delete draft from editor
+$('deleteDraftBtn').addEventListener('click', async () => {
+  if (!currentDraft) return;
+  const confirmed = await showConfirmModal({
+    icon: '🗑',
+    title: 'Delete this draft?',
+    desc: `Draft to: ${currentDraft.proposed?.to || '—'}\nThis cannot be undone.`,
+    confirmLabel: 'Yes, Delete'
+  });
+  if (confirmed) await deleteDraft(currentDraft.id);
+});
 
 // ====================================================
 // ANALYTICS

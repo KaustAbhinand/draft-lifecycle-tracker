@@ -1,15 +1,18 @@
 import json
 import os
-from datetime import datetime
+import threading
+import time
+from datetime import datetime, timedelta
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from tools.draft_store import load_drafts, get_draft
+from tools.draft_store import load_drafts, get_draft, save_drafts
 from tools.draft_tools import create_draft as tool_create_draft, fetch_draft
 from tools.conversion_tools import convert_draft, edit_converted_draft
 from tools.reconciliation_tool import reconcile_draft
 from tools.analytics_tools import generate_lifecycle_report
+from tools.lifecycle_tools import expire_abandoned_drafts
 from agents.lifecycle_agent import run_agent
 
 
@@ -17,6 +20,27 @@ app = Flask(__name__, static_folder="frontend", static_url_path="")
 CORS(app)
 
 MEMORY_FILE = "data/agent_memory.json"
+EXPIRATION_HOURS = 24
+
+
+# --------------------------------------------------
+# Background expiry poller (runs every 60 seconds)
+# --------------------------------------------------
+
+def _expiry_poller():
+    """Daemon thread that auto-expires abandoned OPEN drafts."""
+    while True:
+        try:
+            result = expire_abandoned_drafts()
+            if result["expired_count"] > 0:
+                print(f"[Poller] Auto-expired {result['expired_count']} draft(s): {result['expired_drafts']}")
+        except Exception as e:
+            print(f"[Poller ERROR] {e}")
+        time.sleep(60)
+
+
+_poller_thread = threading.Thread(target=_expiry_poller, daemon=True)
+_poller_thread.start()
 
 
 # --------------------------------------------------
@@ -151,6 +175,44 @@ def api_edit_draft(draft_id):
 def api_reconcile_draft(draft_id):
     result = reconcile_draft(draft_id)
     return jsonify(result)
+
+
+@app.route("/api/drafts/<draft_id>", methods=["DELETE"])
+def api_delete_draft(draft_id):
+    """Permanently delete a draft."""
+    drafts = load_drafts()
+    if draft_id not in drafts:
+        return jsonify({"error": "Draft not found"}), 404
+    del drafts[draft_id]
+    save_drafts(drafts)
+    return jsonify({"success": True, "deleted_id": draft_id})
+
+
+@app.route("/api/drafts/expire-abandoned", methods=["POST"])
+def api_expire_abandoned():
+    """Manually trigger expiry check for all OPEN drafts."""
+    result = expire_abandoned_drafts()
+    return jsonify(result)
+
+
+@app.route("/api/drafts/<draft_id>/expiry-info", methods=["GET"])
+def api_expiry_info(draft_id):
+    """Return expiry countdown info for an OPEN draft."""
+    draft = get_draft(draft_id)
+    if draft is None:
+        return jsonify({"error": "Draft not found"}), 404
+    if draft["status"] != "OPEN":
+        return jsonify({"expires_in_seconds": None, "status": draft["status"]})
+
+    created_at = datetime.fromisoformat(draft["created_at"])
+    expires_at = created_at + timedelta(hours=EXPIRATION_HOURS)
+    now = datetime.now()
+    seconds_left = (expires_at - now).total_seconds()
+    return jsonify({
+        "expires_in_seconds": max(0, round(seconds_left)),
+        "expires_at": expires_at.isoformat(),
+        "is_expired": seconds_left <= 0
+    })
 
 
 # --------------------------------------------------
