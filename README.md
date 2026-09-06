@@ -4,7 +4,8 @@ This is a draft lifecycle tracker agent, that tracks the lifecycle states of a d
 - Fork the repo
 - Clone it (do it from the VS code IDE)
 - Create a virtual environment - python -m venv .venv
-- Activate the virtual environment: venv/Scripts activate.
+- Activate the virtual environment: venv\Scripts\activate.
+- Install the dependencies: **pip install -r requirements.txt**
 - Add a .env file, include the API key like this: **GROQ_API_KEY = (YOUR_KEY_HERE)**
 - Source the API key from groq.
 
