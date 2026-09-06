@@ -64,6 +64,7 @@ def generate_lifecycle_report():
         conversion_rate = 0
         expiration_rate = 0
         edit_rate = 0
+        post_conversion_edit_rate = 0
 
     if conversion_times:
 

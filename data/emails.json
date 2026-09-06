@@ -5,5 +5,19 @@
         "cc": "abhilash@example.com",
         "subject": "Project Updates",
         "body": "Here are the latest project updates:\n- Milestone 1 completed\n- Upcoming tasks for next week\n- Any blockers?\nPlease let me know your thoughts."
+    },
+    "63ce3343-b1e5-4491-b2a4-cff4c63e5b9e": {
+        "id": "63ce3343-b1e5-4491-b2a4-cff4c63e5b9e",
+        "to": "john@example.com",
+        "cc": "",
+        "subject": "Meeting Tomorrow",
+        "body": "Hi John,\n\nLet's discuss our project sync tomorrow at 10 AM. Please provide the report by end of day.\n\nThanks,\n[Your Name]"
+    },
+    "a768bcdc-2266-4231-a79b-dbafd9781e76": {
+        "id": "a768bcdc-2266-4231-a79b-dbafd9781e76",
+        "to": "alice@example.com",
+        "cc": "",
+        "subject": "Meeting Tomorrow at 10\u202fAM",
+        "body": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fPM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
     }
 }

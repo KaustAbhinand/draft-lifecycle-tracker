@@ -237,12 +237,15 @@ async function deleteDraft(draftId) {
     const result = await apiFetch(`/api/drafts/${draftId}`, { method: 'DELETE' });
     if (result.success) {
       toast('🗑 Draft deleted.', 'success');
-      loadDashboard();
+      // Instantly remove card from grid if present
+      const card = document.querySelector(`.draft-card[data-id="${draftId}"]`);
+      if (card) card.remove();
       // If currently editing this draft, go back
       if (currentDraft && currentDraft.id === draftId) {
         switchTab('dashboard');
         currentDraft = null;
       }
+      await loadDashboard();
     } else {
       toast('Delete failed: ' + (result.error || 'Unknown'), 'error');
     }

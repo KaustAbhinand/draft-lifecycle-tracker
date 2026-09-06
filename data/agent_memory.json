@@ -17,6 +17,19 @@
           "actual": "Hi Sanjeev,\n\nI hope you are doing well. I would like to schedule a meeting with you tomorrow morning to discuss our upcoming project and align on next steps. Please let me know your availability and preferred time.\n\nThank you,\nSanjeev"
         }
       }
+    },
+    {
+      "draft_id": "1aa421ee-bc75-42d6-bb98-4c89bd060f39",
+      "timestamp": "2026-09-06T20:11:45.866795",
+      "changes": {
+        "body": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fPM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
+      },
+      "diff": {
+        "body": {
+          "proposed": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fAM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev",
+          "actual": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fPM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
+        }
+      }
     }
   ],
   "patterns": "- **Add precise timing** \u2013 expands the subject to include the exact meeting time (e.g., \u201c10\u202fAM\u201d).  \n- **Eliminate placeholders** \u2013 replaces generic sign\u2011off (\u201c[Your Name]\u201d) with a real name.  \n- **Preserve body content** \u2013 keeps the original greeting, message, and closing line unchanged.  \n- **Use the recipient\u2019s name as signature** \u2013 signs the email with \u201cSanjeev\u201d instead of the sender\u2019s name, indicating a preference for personalizing the sign\u2011off.  "

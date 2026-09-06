@@ -444,10 +444,23 @@ def run_agent(
     if conversation_history is None:
         conversation_history = []
 
+    patterns_text = "No patterns learned yet."
+    try:
+        import os
+        import json
+        if os.path.exists("data/agent_memory.json"):
+            with open("data/agent_memory.json", "r") as f:
+                mem = json.load(f)
+                patterns_text = mem.get("patterns", "No patterns learned yet.")
+    except Exception:
+        pass
+
+    sys_content = SYSTEM_INSTRUCTION + f"\n\nLEARNED PREFERENCES (APPLY THESE TO DRAFTS):\n{patterns_text}"
+
     messages = [
         {
             "role": "system",
-            "content": SYSTEM_INSTRUCTION
+            "content": sys_content
         }
     ]
 

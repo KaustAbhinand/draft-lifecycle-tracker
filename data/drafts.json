@@ -1,36 +1,54 @@
 {
-  "4049980a-3b7e-4e40-b132-7d999ac47490": {
-    "id": "4049980a-3b7e-4e40-b132-7d999ac47490",
+  "a93e6204-ceb5-4a55-87ff-fe596a8eb2c8": {
+    "id": "a93e6204-ceb5-4a55-87ff-fe596a8eb2c8",
     "proposed": {
-      "to": "abhinand@example.com",
+      "to": "john@example.com",
       "cc": "",
-      "subject": "",
-      "body": ""
+      "subject": "Meeting Tomorrow",
+      "body": "Hi John,\n\nLet's discuss our project sync tomorrow.\n\nThanks,\n[Your Name]"
     },
     "actual": {
-      "id": "4ee60383-a20c-4a02-8622-3596761f1600",
-      "to": "abhinand@example.com",
-      "cc": "abhilash@example.com",
-      "subject": "Project Updates",
-      "body": "Here are the latest project updates:\n- Milestone 1 completed\n- Upcoming tasks for next week\n- Any blockers?\nPlease let me know your thoughts."
+      "id": "63ce3343-b1e5-4491-b2a4-cff4c63e5b9e",
+      "to": "john@example.com",
+      "cc": "",
+      "subject": "Meeting Tomorrow",
+      "body": "Hi John,\n\nLet's discuss our project sync tomorrow at 10 AM. Please provide the report by end of day.\n\nThanks,\n[Your Name]"
     },
     "status": "CONVERTED_EDITED",
     "diff": {
       "body": {
-        "proposed": "",
-        "actual": "Here are the latest project updates:\n- Milestone 1 completed\n- Upcoming tasks for next week\n- Any blockers?\nPlease let me know your thoughts."
-      },
-      "cc": {
-        "proposed": "",
-        "actual": "abhilash@example.com"
-      },
-      "subject": {
-        "proposed": "",
-        "actual": "Project Updates"
+        "proposed": "Hi John,\n\nLet's discuss our project sync tomorrow.\n\nThanks,\n[Your Name]",
+        "actual": "Hi John,\n\nLet's discuss our project sync tomorrow at 10 AM. Please provide the report by end of day.\n\nThanks,\n[Your Name]"
       }
     },
-    "created_at": "2026-09-03T10:40:28.237919",
-    "converted_at": "2026-09-03T10:42:42.443807",
-    "time_to_convert_seconds": 134.205888
+    "created_at": "2026-09-06T20:02:56.800225",
+    "converted_at": "2026-09-06T20:03:34.108649",
+    "time_to_convert_seconds": 37.308424
+  },
+  "1aa421ee-bc75-42d6-bb98-4c89bd060f39": {
+    "id": "1aa421ee-bc75-42d6-bb98-4c89bd060f39",
+    "proposed": {
+      "to": "alice@example.com",
+      "cc": "",
+      "subject": "Meeting Tomorrow at 10\u202fAM",
+      "body": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fAM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
+    },
+    "actual": {
+      "id": "a768bcdc-2266-4231-a79b-dbafd9781e76",
+      "to": "alice@example.com",
+      "cc": "",
+      "subject": "Meeting Tomorrow at 10\u202fAM",
+      "body": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fPM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
+    },
+    "status": "CONVERTED_EDITED",
+    "diff": {
+      "body": {
+        "proposed": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fAM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev",
+        "actual": "Hi Alice,\n\nI hope you\u2019re doing well. I\u2019d like to confirm our meeting scheduled for tomorrow at 10\u202fPM. Please let me know if this time still works for you.\n\nBest regards,\nSanjeev"
+      }
+    },
+    "created_at": "2026-09-06T20:08:57.539182",
+    "converted_at": "2026-09-06T20:11:17.138391",
+    "time_to_convert_seconds": 139.599209
   }
 }
